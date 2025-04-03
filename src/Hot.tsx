@@ -113,24 +113,31 @@ const Category = ({
   onSelected: (category: string) => void;
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [showToggleButton, setShowToggleButton] = useState(false);
-  const maxVisibleTabs = 8;
-
-  const visiblePlats = isOpen ? plats : plats.slice(0, maxVisibleTabs);
 
   useEffect(() => {
-    const updateDimensions = () => {
-      setShowToggleButton(plats.length > maxVisibleTabs);
-    };
-
-    updateDimensions();
-  }, []);
+    const activeTab = document.querySelector(
+      `[data-state="active"]`
+    ) as HTMLElement | null;
+    if (!isOpen && activeTab) {
+      // 滚动到选中的 Tab
+      activeTab.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+        inline: "center",
+      });
+    }
+  }, [isOpen]);
 
   return (
     <Card className="p-1">
-      <Tabs defaultValue="top">
-        <TabsList className="bg-white flex flex-wrap gap-1 h-full justify-start relative">
-          {visiblePlats.map((platform) => (
+      <Tabs defaultValue="top" className="relative">
+        <TabsList
+          className={cn(
+            "bg-white flex gap-1 h-full justify-start  w-full",
+            !isOpen ? "overflow-x-auto" : "flex-wrap"
+          )}
+        >
+          {plats.map((platform) => (
             <TabsTrigger
               value={platform.value}
               key={platform.value}
@@ -151,24 +158,23 @@ const Category = ({
               {platform.label}
             </TabsTrigger>
           ))}
-          {showToggleButton && (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsOpen(!isOpen)}
-              className={cn(
-                "absolute top-1.5 bg-gray-200 text-gray-600 hover:bg-gray-100 transition-colors duration-200 align-middle items-center",
-                isOpen ? "right-[8px]" : "right-[-55px]"
-              )}
-            >
-              {isOpen ? (
-                <ChevronUp className="size-4" />
-              ) : (
-                <ChevronDown className="size-4" />
-              )}
-            </Button>
-          )}
         </TabsList>
+        {
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsOpen(!isOpen)}
+            className={cn(
+              "z-10 absolute top-1.5 right-0 bg-gray-200 text-gray-600 hover:bg-gray-100 transition-colors duration-200 align-middle items-center"
+            )}
+          >
+            {isOpen ? (
+              <ChevronUp className="size-4" />
+            ) : (
+              <ChevronDown className="size-4" />
+            )}
+          </Button>
+        }
       </Tabs>
     </Card>
   );
@@ -335,7 +341,7 @@ const NewsListItem = ({
                   {item.newRating && (
                     <span className="flex items-center align-middle">
                       <BookHeart className="size-4 mr-1" />
-                      {(item.newRating / 10).toFixed(1) + '%'}
+                      {(item.newRating / 10).toFixed(1) + "%"}
                     </span>
                   )}
 
@@ -367,12 +373,10 @@ const NewsListItem = ({
                 <div className="relative ml-2 md:ml-4 flex-none">
                   <div
                     className={cn(
-                      "relative rounded overflow-hidden",
+                      "relative rounded overflow-hidden shadow border-white",
                       isShuCover ? "h-[158px] w-[98px]" : "w-[158px] h-[98px]"
                     )}
                   >
-                    {/* 图片 */}
-                    {isShuCover}
                     <img
                       src={`http://localhost:48080/https://img.rebang.today/${
                         item.img || item.image
@@ -382,7 +386,8 @@ const NewsListItem = ({
                       referrerPolicy="no-referrer"
                     />
 
-                    {/* 时长显示 */}
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+
                     {item.duration_str && (
                       <div className="absolute bottom-0 right-0 bg-black bg-opacity-60 text-white text-xs px-1 py-0.5 rounded-tl">
                         {item.duration_str}
