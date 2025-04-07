@@ -151,7 +151,6 @@ export const plats = [
     value: "guancha-user",
     img: "https://cdn.rebang.today/forever/tab_icon/guancha.png",
   },
-  { label: "虎嗅", value: "huxiu" },
   {
     label: "快手",
     value: "kuaishou",
@@ -229,6 +228,11 @@ export const plats = [
       },
     ],
   },
+  {
+    label: "虎嗅网",
+    value: "huxiu",
+    img: "https://cdn.rebang.today/forever/tab_icon/huxiu.png",
+  },
 ];
 
 export const HOT_TAG_MAP: Record<string, { text: string; bg: string }> = {
@@ -245,4 +249,5 @@ export const HOT_TAG_MAP: Record<string, { text: string; bg: string }> = {
   refuteRumors: { text: "辟谣", bg: "#1a74ff" },
   onSite: { text: "现场", bg: "#1a74ff" },
   interpretation: { text: "解读", bg: "#1a74ff" },
+  
 };
